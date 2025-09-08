@@ -1,0 +1,27 @@
+<!doctype html>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GreenSync Verify</title>
+<div style="display:grid;place-items:center;min-height:100vh;font-family:system-ui">
+  <div style="padding:24px;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.08);max-width:420px;text-align:center">
+    <h1>Verifying…</h1>
+    <p>Nếu chưa thấy mở app, bấm nút bên dưới.</p>
+    <p><a id="open" style="padding:12px 16px;border-radius:10px;background:#16a34a;color:#fff;display:inline-block;text-decoration:none">Open in GreenSync</a></p>
+  </div>
+</div>
+<script>
+  const qs = new URLSearchParams(location.search);
+  const token = qs.get("token") || "";
+  const schemeUrl = `greensync://verify?token=${encodeURIComponent(token)}`;
+
+  // Thử mở ngay (một số trình duyệt cần user gesture nên có thêm nút)
+  setTimeout(() => { location.href = schemeUrl; }, 50);
+
+  // Nút fallback (khi trình duyệt chặn auto-open)
+  const open = document.getElementById("open");
+  open.href = schemeUrl;
+  open.addEventListener("click", () => {
+    const intentUrl = `intent://verify?token=${encodeURIComponent(token)}#Intent;scheme=greensync;package=com.hoang101.greensync;end`;
+    location.href = schemeUrl;
+    setTimeout(() => { location.href = intentUrl; }, 400);
+  });
+</script>
